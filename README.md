@@ -1,10 +1,14 @@
 # AgricultureFund
 
-1. 数据集格式要求：（以‘2008.txt’为例）
-  - 文件名称
-  - 每条数据的格式
-  - utf-8 编码
+## Matters need attentions
+1. The data set needs to satisfy ：（ex：‘2008.txt’）
+  - the filename just like '2008.txt'
+  - the formation of every single data needs to correspond to '2008.txt'
+  - utf-8 encoding
   
-2. run py
+2. run 'sankey.py'
 
-3. copy txt to ‘sankeyModel.html’
+3. copy 'links.txt' & 'nodes.txt' to ‘sankeyModel.html’
+
+4. open 'sankeyModel.html' in browser
+
