@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 1500px;height:1200px;"></div>
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+        myChart.showLoading();
+        myChart.hideLoading();
+        myChart.setOption(option = {
+            title: {
+                text: 'Sankey Diagram'},
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove'
+            },
+            series: [{
+                type: 'sankey',
+                layout: 'none',
+                layoutIterations: 40,
+            
+                focusNodeAdjacency: 'allEdges',
+                links:
+                    [
+                    // 略
+                    ],
+
+                data:
+                    [
+                    // 略
+                    ],
+                itemStyle: {
+                    //节点矩形的样式
+                    normal: {
+                        borderWidth: 1,
+                        borderColor: '#aaa',
+                    },
+                },
+
+                lineStyle: {
+                    //边的样式
+                    normal: {
+                        color: 'source',
+                        curveness: 0.5}},
+            }]
+            });
+    </script>
+</body>
+</html>
