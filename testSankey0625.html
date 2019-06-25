@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 1500px;height:800px;"></div>
+    <script type="text/javascript">
+        function setChart(link, data) {
+            var myChart = echarts.init(document.getElementById('main'));
+            var option = {
+                title: {
+                    text: 'Sankey Diagram'},
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                },
+                series: [
+                {
+                    type: 'sankey',
+                    layout: 'none',
+                    layoutIterations: 40,
+                    nodeGap: 20,
+                    focusNodeAdjacency: 'allEdges',
+                    links: link,
+
+                    data: data,
+                    itemStyle: {
+                        //节点矩形的样式
+                        normal: {
+                            borderWidth: 1,
+                            borderColor: '#aaa',
+                        },
+                    },
+
+                    lineStyle: {
+                        //边的样式
+                        normal: {
+                            color: 'source',
+                            curveness: 0.5}},
+                }]
+                }
+            myChart.showLoading();
+            myChart.hideLoading();
+            myChart.setOption(option);
+
+
+            // 1. 获取被点击元素
+            // 2. 判断该元素
+            // 3. 用户输入新的标签名
+
+
+            // 4. 根据该元素查找所有和它相关的 data.name, link.source, link.target, 并更新该元素的新标签名;
+            var oldTag = '基因  ';
+            var newTag = '1234353456';
+
+            for (var l of link){
+                if (l["source"] == oldTag){
+                    l["source"] = newTag;
+                }
+                if (l["target"] == oldTag){
+                    l["target"] = newTag;
+                }
+            }
+
+            for (var d of data){
+                if (d["name"] == oldTag){
+                    d["name"] = newTag;
+                }
+            }
+            console.log(link);
+            console.log(data);
+
+
+            // 6. 刷新页面
+            sleep(1500);
+            myChart.setOption(option);
+
+        }
+
+
+
+        function sleep(delay)
+        {
+            var start = new Date().getTime();
+            while (new Date().getTime() < start + delay);
+        }
+
+
+
+        var link = [
+
+                        {'source': '克隆 ', 'target': '  ', 'value': '0.0',  lineStyle:{opacity: 0 } },
+                        {'source': '机制 ', 'target': '机制  ', 'value': '0.008'},
+                        {'source': ' ', 'target': '免疫  ', 'value': '0.0',  lineStyle:{opacity: 0 } },
+                        {'source': '蛋白 ', 'target': '蛋白  ', 'value': '0.004'},
+                        {'source': '分子 ', 'target': '分子  ', 'value': '0.006'},
+                        {'source': '基因 ', 'target': '基因  ', 'value': '0.010'},
+                        {'source': '分子 ', 'target': '分子  ', 'value': '0.007'},
+
+                    ]
+        var data = [
+                        {'name': ' ', itemStyle:{color: '#fff',borderColor: '#fff'} },
+                        {'name': '基因 '},
+                        {'name': '基因  '},
+                        {'name': '表达 '},
+                        {'name': '植物 '},
+                        {'name': '机制 '},
+                        {'name': '调控 '},
+                        {'name': '分子 '},
+                        {'name': '分子  '},
+
+                        {'name': '蛋白 '},
+                        {'name': '功能 '},
+                        {'name': '发育 '},
+                        {'name': '克隆 '},
+                    ]
+
+
+        setChart(link, data)
+    </script>
+</body>
+</html>
