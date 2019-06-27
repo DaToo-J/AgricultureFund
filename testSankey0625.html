@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div id="main" style="width: 1500px;height:800px;"></div>
+    <div id="main" style="width: 1500px;height:600px;"></div>
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('main'));
         var link = [
@@ -85,29 +85,7 @@
             while (new Date().getTime() < start + delay);
         }
 
-        function findNode(link, data){
-            // 1. 获取旧标签名
-            var hint= document.getElementById("hint");
-            var tag = document.getElementById("tag");
-            oldTag = tag.value;
-            var btn= document.getElementById("submit");
-
-            // 2. 判断是否存在该标签
-            for (var l of link){
-                if ((l["source"] == oldTag) || (l["target"] == oldTag)){
-                    alert("请在输入框内输入新的标签名；");
-                    hint.innerText = "请输入新的标签名";
-                    tag.value = "";
-                    tag.setAttribute("id", "newTag");
-                    btn.setAttribute("onClick", "changeNode(oldTag, link, data)");
-                    return
-                }
-            }
-            alert("请重新输入；");
-            tag.value = "";
-        }
-
-        function changeNode (oldTag, link, data) {
+        function changeNode (oldTag, newTag, link, data) {
             var option = {
                 title: {
                     text: 'Sankey Diagram'},
@@ -145,11 +123,6 @@
                             curveness: 0.5}},
                 }]
             };
-            var hint= document.getElementById("hint");
-            var tag = document.getElementById("newTag");
-            var newTag = tag.value;
-            var btn= document.getElementById("submit");
-
             for (var l of link){
                 if (l["source"] == oldTag) {
                     l["source"] = newTag;
@@ -166,25 +139,44 @@
             }
 
             alert("已修改好，请查看。");
-
             sleep(500);
             myChart.setOption(option);
 
-            hint.innerText = "请输入待修改标签名";
-            tag.value = "";
-            tag.setAttribute("id", "tag");
-            btn.setAttribute("onClick", "findNode(link, data)");
         }
 
         setChart(link, data);
+        window.ondblclick = doubleClick;
+        window.onmousedown = mouseDown;
+        window.onmouseup = mouseUp;
 
+        function doubleClick(){
+            var res = confirm("是否要对该节点进行修改？");
+            if (res){
+                var txt = document.getElementsByTagName("BODY")[0].textContent;
+                var tag = txt.split(':')[0].trimStart();
+                console.log(tag);
+
+                var newTag = prompt("请输入新的标签名");
+
+                if (newTag != null) {
+                    console.log(newTag);
+                    changeNode(tag, newTag, link, data);
+                };
+
+            };
+        }
+
+        function mouseDown(){
+            var txt = document.getElementsByTagName("BODY")[0].textContent;
+            var tag = txt.split(':')[0].trimStart();
+            console.log(tag);
+        }
+        function mouseUp(){
+            var txt = document.getElementsByTagName("BODY")[0].textContent;
+            var tag = txt.split(':')[0].trimStart();
+            console.log(tag);
+        }
 
     </script>
-    <div>
-        <p id='hint'>请输入待修改标签名</p>
-        <input type="text" name="name" id="tag" />
-        <input type="button" name="button" id="submit" value="提交" onclick="findNode(link, data)" />
-    </div>
-
 </body>
 </html>
