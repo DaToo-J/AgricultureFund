@@ -18,18 +18,26 @@
                         {'source': '蛋白 ', 'target': '蛋白  ', 'value': '0.004'},
                         {'source': '分子 ', 'target': '分子  ', 'value': '0.006'},
                         {'source': '基因 ', 'target': '基因  ', 'value': '0.010'},
-                        {'source': '分子 ', 'target': '分子  ', 'value': '0.007'},
+                        {'source': '基因  ', 'target': '基因3  ', 'value': '0.005'},
+                        {'source': '分子 ', 'target': '基因  ', 'value': '0.003'},
+                        {'source': '分子  ', 'target': '分子3  ', 'value': '0.002'},
+                        {'source': '基因  ', 'target': '分子3  ', 'value': '0.005'},
+                        // {'source': '分子3  ', 'target': '分子  ', 'value': '0.007'},
+                        // {'source': '分子 ', 'target': '分子  ', 'value': '0.007'},
+                        // {'source': '分子 ', 'target': '分子  ', 'value': '0.007'},
                     ];
         var data = [
                         {'name': ' ', itemStyle:{color: '#fff',borderColor: '#fff'} },
                         {'name': '基因 '},
                         {'name': '基因  '},
+                        {'name': '基因3  '},
                         {'name': '表达 '},
                         {'name': '植物 '},
                         {'name': '机制 '},
                         {'name': '调控 '},
                         {'name': '分子 '},
                         {'name': '分子  '},
+                        {'name': '分子3  '},
 
                         {'name': '蛋白 '},
                         {'name': '功能 '},
@@ -78,12 +86,12 @@
             myChart.showLoading();
             myChart.hideLoading();
             myChart.setOption(option);
-        }
+        };
 
         function sleep(delay){
             var start = new Date().getTime();
             while (new Date().getTime() < start + delay);
-        }
+        };
 
         function changeNode (oldTag, newTag, link, data) {
             var option = {
@@ -142,8 +150,81 @@
             sleep(500);
             myChart.setOption(option);
 
-        }
+        };
 
+        function mergeTwoNodes(mouse_down_tag, mouse_up_tag, link, data){
+
+
+            var option = {
+                title: {
+                    text: 'Sankey Diagram'},
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                series: [
+                {
+                    type: 'sankey',
+                    layout: 'none',
+                    layoutIterations: 40,
+                    nodeGap: 20,
+                    focusNodeAdjacency: 'allEdges',
+                    links: link,
+
+                    data: data,
+                    itemStyle: {
+                        //节点矩形的样式
+                        normal: {
+                            borderWidth: 1,
+                            borderColor: '#aaa',
+                        },
+                    },
+
+                    lineStyle: {
+                        //边的样式
+                        normal: {
+                            color: 'source',
+                            curveness: 0.5}},
+                }]
+            };
+ 
+            // console.log("mergeTwoNodes !");
+            var merged_tag = mouse_down_tag.trim() + "_"+ mouse_up_tag.trim();
+            console.log(merged_tag);
+            for (var l of link){
+                if ((l["source"] == mouse_down_tag) || (l["source"] == mouse_up_tag) ) {
+                    l["source"] = merged_tag;
+                }
+                if ( (l["target"] == mouse_down_tag) || (l["target"] == mouse_up_tag) ){
+                    l["target"] = merged_tag;
+                }
+            }
+            for (var d of data){
+                if (d["name"] == mouse_down_tag){
+                    d["name"] = merged_tag;
+                    break;
+                }
+            }
+            for (var d of data){
+                if (d["name"] == mouse_up_tag){
+                    d["name"] = "";
+                    break;
+                }
+            }
+            console.log(data);
+            console.log(link);
+
+
+            alert("已修改好，请查看。");
+            sleep(500);
+            myChart.setOption(option);
+
+        };
         setChart(link, data);
         window.ondblclick = doubleClick;
         window.onmousedown = mouseDown;
@@ -164,18 +245,27 @@
                 };
 
             };
-        }
+        };
 
         function mouseDown(){
             var txt = document.getElementsByTagName("BODY")[0].textContent;
-            var tag = txt.split(':')[0].trimStart();
-            console.log(tag);
-        }
+            mouse_down_tag = txt.split(':')[0].trimStart();
+            // console.log(mouse_down_tag);
+        };
         function mouseUp(){
             var txt = document.getElementsByTagName("BODY")[0].textContent;
-            var tag = txt.split(':')[0].trimStart();
-            console.log(tag);
-        }
+            var mouse_up_tag = txt.split(':')[0].trimStart();
+            var res = confirm("是否要合并以下两个节点:   " + mouse_down_tag + " 和 " + mouse_up_tag);
+            if (res){
+                console.log(data);
+                console.log(link);
+                console.log("---------------");
+                mergeTwoNodes(mouse_down_tag, mouse_up_tag, link, data);
+                // console.log("continue !");
+            }
+
+
+        };
 
     </script>
 </body>
