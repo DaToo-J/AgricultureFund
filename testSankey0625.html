@@ -225,44 +225,83 @@
             myChart.setOption(option);
 
         };
+        
         setChart(link, data);
-        window.ondblclick = doubleClick;
-        window.onmousedown = mouseDown;
-        window.onmouseup = mouseUp;
+        
+        // window.ondblclick = doubleClick;
+        // window.ondragstart  = mouseDown;
+        // window.onmouseup = mouseUp;
+        // myChart.on('click', function (params) {
+        //     // 控制台打印数据的名称
+        //     console.log('params: '+params);
+        //     console.log('componentType: '+params.componentType);
 
-        function doubleClick(){
+        //     console.log('name '+params.name);
+        //     console.log('dataIndex '+params.dataIndex);
+        //     console.log('data '+params.data);
+        //     console.log('value '+params.value);
+        //     console.log('dataType '+params.dataType);
+        //     var index = params.dataIndex;
+        //     console.log(data[index]);
+        // });
+
+        myChart.on('dblclick', {dataType:  'node'}, function (params) {
+            var tag = params.data.name;
             var res = confirm("是否要对该节点进行修改？");
             if (res){
-                var txt = document.getElementsByTagName("BODY")[0].textContent;
-                var tag = txt.split(':')[0].trimStart();
-                console.log(tag);
-
-                var newTag = prompt("请输入新的标签名");
-
+                 var newTag = prompt("请输入新的标签名");
                 if (newTag != null) {
                     console.log(newTag);
                     changeNode(tag, newTag, link, data);
                 };
-
             };
-        };
 
-        function mouseDown(){
-            var txt = document.getElementsByTagName("BODY")[0].textContent;
-            mouse_down_tag = txt.split(':')[0].trimStart();
-            // console.log(mouse_down_tag);
-        };
-        function mouseUp(){
-            var txt = document.getElementsByTagName("BODY")[0].textContent;
-            var mouse_up_tag = txt.split(':')[0].trimStart();
-            var res = confirm("是否要合并以下两个节点:   " + mouse_down_tag + " 和 " + mouse_up_tag);
-            if (res){
-                console.log(data);
-                console.log(link);
-                console.log("---------------");
-                mergeTwoNodes(mouse_down_tag, mouse_up_tag, link, data);
+        });
+
+
+        myChart.on('mousedown', {dataType:  'node'}, function (params) {
+            console.log('down '+ params.data.name);
+            myChart.on('mouseup', {dataType:  'node'}, function (params) {
+                console.log('up '+ params.data.name);
+            });
+        });
+        
+
+
+        // function doubleClick(){
+        //     var res = confirm("是否要对该节点进行修改？");
+        //     if (res){
+        //         var txt = document.getElementsByTagName("BODY")[0].textContent;
+        //         var tag = txt.split(':')[0].trimStart();
+        //         console.log(tag);
+
+        //         var newTag = prompt("请输入新的标签名");
+
+        //         if (newTag != null) {
+        //             console.log(newTag);
+        //             changeNode(tag, newTag, link, data);
+        //         };
+
+        //     };
+        // };
+
+        // function mouseDown(){
+        //     var txt = document.getElementsByTagName("BODY")[0].textContent;
+        //     mouse_down_tag = txt.split(':')[0].trimStart();
+        //     console.log("----"+mouse_down_tag);
+        // };
+        // function mouseUp(){
+        //     var txt = document.getElementsByTagName("BODY")[0].textContent;
+        //     var mouse_up_tag = txt.split(':')[0].trimStart();
+        //     console.log("----"+mouse_up_tag);
+            // var res = confirm("是否要合并以下两个节点:   " + mouse_down_tag + " 和 " + mouse_up_tag);
+            // if (res){
+            //     console.log(data);
+            //     console.log(link);
+            //     console.log("---------------");
+            //     mergeTwoNodes(mouse_down_tag, mouse_up_tag, link, data);
                 // console.log("continue !");
-            }
+            // }
 
 
         };
