@@ -16,27 +16,32 @@
                         {'source': '机制 ', 'target': '机制  ', 'value': '0.008'},
                         {'source': ' ', 'target': '免疫  ', 'value': '0.0',  lineStyle:{opacity: 0 } },
                         {'source': '蛋白 ', 'target': '蛋白  ', 'value': '0.004'},
-                        {'source': '分子 ', 'target': '分子  ', 'value': '0.006'},
-                        {'source': '基因 ', 'target': '基因  ', 'value': '0.010'},
-                        {'source': '分子 ', 'target': '分子  ', 'value': '0.007'},
+                        {'source': '分子 ', 'target': '分子2  ', 'value': '0.010'},
+                        {'source': '基因 ', 'target': '基因2  ', 'value': '0.010'},
+                        {'source': '基因2  ', 'target': '基因3  ', 'value': '0.005'},
+                        {'source': '分子 ', 'target': '基因2  ', 'value': '0.003'},
+                        {'source': '分子2  ', 'target': '分子3  ', 'value': '0.002'},
+                        {'source': '基因2  ', 'target': '分子3  ', 'value': '0.005'},
                     ];
+
         var data = [
                         {'name': ' ', itemStyle:{color: '#fff',borderColor: '#fff'} },
                         {'name': '基因 '},
-                        {'name': '基因  '},
+                        {'name': '基因2  '},
+                        {'name': '基因3  '},
                         {'name': '表达 '},
                         {'name': '植物 '},
                         {'name': '机制 '},
                         {'name': '调控 '},
                         {'name': '分子 '},
-                        {'name': '分子  '},
-
+                        {'name': '分子2  '},
+                        {'name': '分子3  '},
                         {'name': '蛋白 '},
                         {'name': '功能 '},
                         {'name': '发育 '},
                         {'name': '克隆 '},
                     ];
-
+   
         function setChart(link, data) {
             var option = {
                 title: {
@@ -58,7 +63,6 @@
                     nodeGap: 20,
                     focusNodeAdjacency: 'allEdges',
                     links: link,
-
                     data: data,
                     itemStyle: {
                         //节点矩形的样式
@@ -67,7 +71,6 @@
                             borderColor: '#aaa',
                         },
                     },
-
                     lineStyle: {
                         //边的样式
                         normal: {
@@ -78,13 +81,13 @@
             myChart.showLoading();
             myChart.hideLoading();
             myChart.setOption(option);
-        }
-
+        };
+        
         function sleep(delay){
             var start = new Date().getTime();
             while (new Date().getTime() < start + delay);
-        }
-
+        };
+        
         function changeNode (oldTag, newTag, link, data) {
             var option = {
                 title: {
@@ -106,7 +109,6 @@
                     nodeGap: 20,
                     focusNodeAdjacency: 'allEdges',
                     links: link,
-
                     data: data,
                     itemStyle: {
                         //节点矩形的样式
@@ -115,7 +117,6 @@
                             borderColor: '#aaa',
                         },
                     },
-
                     lineStyle: {
                         //边的样式
                         normal: {
@@ -131,51 +132,106 @@
                     l["target"] = newTag;
                 }
             }
-
             for (var d of data){
                 if (d["name"] == oldTag){
                     d["name"] = newTag;
                 }
             }
-
             alert("已修改好，请查看。");
             sleep(500);
             myChart.setOption(option);
+        };
+        
+        function mergeTwoNodes(mouse_down_tag, mouse_up_tag,merged_tag, link, data){
+            var option = {
+                title: {
+                    text: 'Sankey Diagram'},
+                tooltip: {
+                    trigger: 'item',
+                    triggerOn: 'mousemove',
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+                series: [
+                {
+                    type: 'sankey',
+                    layout: 'none',
+                    layoutIterations: 40,
+                    nodeGap: 20,
+                    focusNodeAdjacency: 'allEdges',
+                    links: link,
+                    data: data,
+                    itemStyle: {
+                        //节点矩形的样式
+                        normal: {
+                            borderWidth: 1,
+                            borderColor: '#aaa',
+                        },
+                    },
+                    lineStyle: {
+                        //边的样式
+                        normal: {
+                            color: 'source',
+                            curveness: 0.5}},
+                }]
+            };
 
-        }
+            for (var l of link){
+                if ((l["source"] == mouse_down_tag) || (l["source"] == mouse_up_tag) ) {
+                    l["source"] = merged_tag;
+                }
+                if ( (l["target"] == mouse_down_tag) || (l["target"] == mouse_up_tag) ){
+                    l["target"] = merged_tag;
+                }
+            }
+
+            link.sort(function(a,b){return b['value'] - a['value']});
+            alert("已修改好，请查看。");
+            sleep(500);
+            myChart.setOption(option);
+        };
 
         setChart(link, data);
-        window.ondblclick = doubleClick;
-        window.onmousedown = mouseDown;
-        window.onmouseup = mouseUp;
 
-        function doubleClick(){
+        // Change nodes' name
+        myChart.on('dblclick', {dataType:  'node'}, function (params) {
+            var tag = params.data.name;
             var res = confirm("是否要对该节点进行修改？");
             if (res){
-                var txt = document.getElementsByTagName("BODY")[0].textContent;
-                var tag = txt.split(':')[0].trimStart();
-                console.log(tag);
-
-                var newTag = prompt("请输入新的标签名");
-
+                 var newTag = prompt("请输入新的标签名");
                 if (newTag != null) {
                     console.log(newTag);
                     changeNode(tag, newTag, link, data);
                 };
-
             };
-        }
+        });
 
-        function mouseDown(){
-            var txt = document.getElementsByTagName("BODY")[0].textContent;
-            var tag = txt.split(':')[0].trimStart();
-            console.log(tag);
-        }
-        function mouseUp(){
-            var txt = document.getElementsByTagName("BODY")[0].textContent;
-            var tag = txt.split(':')[0].trimStart();
-            console.log(tag);
-        }
+        // Merge two nodes
+        myChart.on('mousedown', {dataType:  'node'}, function (params) {
+            if (params.event.event.ctrlKey){
+                mouse_down_tag = params.data.name;
+                mouse_down_index = params.dataIndex;
+            }
+        });
+
+        // Merge two nodes
+        myChart.on('mouseup', {dataType:  'node'}, function (params) {
+            var mouse_up_tag = params.data.name;
+            mouse_up_index = params.dataIndex;
+
+            if (params.event.event.ctrlKey && mouse_down_tag != mouse_up_tag){
+                var res = confirm("是否要合并以下两个节点:   " + mouse_down_tag + " 和 " + mouse_up_tag);
+                if (res){
+                    var merged_tag = mouse_down_tag.trim() + "_"+ mouse_up_tag.trim();
+                    data[mouse_down_index]['name'] = merged_tag;
+                    data.splice(mouse_up_index,1);
+                    mergeTwoNodes(mouse_down_tag, mouse_up_tag, merged_tag, link, data);
+                }
+            }
+        });
 
     </script>
 </body>
