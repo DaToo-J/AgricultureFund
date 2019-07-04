@@ -25,4 +25,11 @@ If you have some data that could manifest the specific filed's development, whic
 ![sankey0307.png-231.4kB][1]
 
 
+## Updates
+
+1. Now users can change node's name by double clicking node, then follow the prompt, input the node's new name and confirm.
+
+2. Users can also merge two nodes into one. just hold 'ctrl' button while dragging first node to second node.
+
+
   [1]: http://static.zybuluo.com/HelloDatoo/32rbnfk7dmov33fc4bw5e056/sankey0307.png
