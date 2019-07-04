@@ -16,16 +16,14 @@
                         {'source': '机制 ', 'target': '机制  ', 'value': '0.008'},
                         {'source': ' ', 'target': '免疫  ', 'value': '0.0',  lineStyle:{opacity: 0 } },
                         {'source': '蛋白 ', 'target': '蛋白  ', 'value': '0.004'},
-                        {'source': '分子 ', 'target': '分子2  ', 'value': '0.006'},
+                        {'source': '分子 ', 'target': '分子2  ', 'value': '0.010'},
                         {'source': '基因 ', 'target': '基因2  ', 'value': '0.010'},
                         {'source': '基因2  ', 'target': '基因3  ', 'value': '0.005'},
                         {'source': '分子 ', 'target': '基因2  ', 'value': '0.003'},
                         {'source': '分子2  ', 'target': '分子3  ', 'value': '0.002'},
                         {'source': '基因2  ', 'target': '分子3  ', 'value': '0.005'},
-                        // {'source': '分子3  ', 'target': '分子2  ', 'value': '0.007'},
-                        // {'source': '分子 ', 'target': '分子2  ', 'value': '0.007'},
-                        // {'source': '分子 ', 'target': '分子2  ', 'value': '0.007'},
                     ];
+
         var data = [
                         {'name': ' ', itemStyle:{color: '#fff',borderColor: '#fff'} },
                         {'name': '基因 '},
@@ -43,6 +41,7 @@
                         {'name': '发育 '},
                         {'name': '克隆 '},
                     ];
+   
         function setChart(link, data) {
             var option = {
                 title: {
@@ -83,10 +82,12 @@
             myChart.hideLoading();
             myChart.setOption(option);
         };
+        
         function sleep(delay){
             var start = new Date().getTime();
             while (new Date().getTime() < start + delay);
         };
+        
         function changeNode (oldTag, newTag, link, data) {
             var option = {
                 title: {
@@ -140,6 +141,7 @@
             sleep(500);
             myChart.setOption(option);
         };
+        
         function mergeTwoNodes(mouse_down_tag, mouse_up_tag,merged_tag, link, data){
             var option = {
                 title: {
@@ -186,6 +188,7 @@
                 }
             }
 
+            link.sort(function(a,b){return b['value'] - a['value']});
             alert("已修改好，请查看。");
             sleep(500);
             myChart.setOption(option);
@@ -211,30 +214,21 @@
             if (params.event.event.ctrlKey){
                 mouse_down_tag = params.data.name;
                 mouse_down_index = params.dataIndex;
-                console.log(params.info + '  down ');
-                console.log(params.dataIndex + '  down ');
-                console.log(data[params.dataIndex]['name'] + '  down ');
             }
         });
 
+        // Merge two nodes
         myChart.on('mouseup', {dataType:  'node'}, function (params) {
             var mouse_up_tag = params.data.name;
-            console.log(params);
-            console.log(params.dataIndex + '  up ');
             mouse_up_index = params.dataIndex;
 
             if (params.event.event.ctrlKey && mouse_down_tag != mouse_up_tag){
                 var res = confirm("是否要合并以下两个节点:   " + mouse_down_tag + " 和 " + mouse_up_tag);
                 if (res){
                     var merged_tag = mouse_down_tag.trim() + "_"+ mouse_up_tag.trim();
-
                     data[mouse_down_index]['name'] = merged_tag;
-                    data[mouse_up_index]['name'] = "";
-
+                    data.splice(mouse_up_index,1);
                     mergeTwoNodes(mouse_down_tag, mouse_up_tag, merged_tag, link, data);
-
-                    console.log(data);
-                    console.log(link);
                 }
             }
         });
